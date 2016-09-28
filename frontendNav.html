@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+		<script>
+			$(function() {
+				var $content = $("#content");
+				var data;
+				
+				showContent();
+				showAddNav();
+
+				function showContent() {
+					
+					// 加载本地缓存的数据
+					if(!localStorage.nav2) {
+						// 如果没有缓存，加载服务器数据。
+						$.getJSON("jqnav.json", function(json) {
+							data = json;
+							show();
+						});
+					} else {
+						data = JSON.parse(localStorage.nav2);
+						show();
+					}
+					
+				}
+
+				function createBlock(json, block) {
+					// div的样子
+					var $block = $("<div><p></p><ul></ul></div>");
+
+					// title
+					$block.find("p").html(block);
+
+					// items
+					var $ul = $block.find("ul");
+					for(var i = 0; i < json[block].length; i++) {
+						var item = json[block][i];
+						var $li = $("<li><span></span><p></p></li>");
+						$li.find("span").html(item.title);
+						$li.find("p").html(item.desc);
+						$li.wrapInner("<a href='" + item.url + "'></a>");
+						$ul.append($li);
+					}
+
+					// append
+					$content.append($block);
+				}
+
+				function showAddNav() {
+					var $add = $("#add");
+
+					$add.find("#btnAdd").click(function() {
+						var input = $add.find("input[type=text]");
+						var item = {};
+						var category = input.eq(0).val();
+						item.title = input.eq(1).val();
+						item.ulr = input.eq(2).val();
+						item.desc = input.eq(3).val();
+
+						data[category].push(item);
+						
+						localStorage.nav2 = JSON.stringify(data);
+						show();
+					});
+				}
+
+				function show() {
+					$content.html("");
+					for(var block in data) {
+						createBlock(data, block);
+					}
+				}
+
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="add">
+			类别: <input type="text" value="Javascript" /> 网站：
+			<input type="text" /> 网址：
+			<input type="text" /> 推荐理由：
+			<input type="text" />
+			<input id="btnAdd" type="button" value="添加" />
+		</div>
+
+		<div id="content">
+
+		</div>
+
+	</body>
+
+</html>

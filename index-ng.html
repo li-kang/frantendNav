@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html ng-app="myapp">
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script type="text/javascript" src="js/angular.min.js" ></script>
+		<script>
+			angular.module("myapp", []);
+			angular.module("myapp").controller("ctrlMain", function($scope){
+				$scope.feedback = "Cool";
+			});
+			
+		</script>
+	</head>
+	<body ng-controller="ctrlMain">
+		<input type="button" value="老师长得太帅" ng-click="feedback='老师长得太帅'"/>
+		<textarea>{{feedback}}</textarea>
+	</body>
+</html>
